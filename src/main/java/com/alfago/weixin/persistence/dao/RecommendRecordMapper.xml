@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alfago.weixin.persistence.dao.RecommendRecordMapper">
+<!-- 	<cache type="org.mybatis.caches.ehcache.LoggingEhcache">
+		<property name="timeToIdleSeconds" value="5" />
+		<property name="timeToLiveSeconds" value="5" />
+		<property name="maxEntriesLocalHeap" value="1000" />
+		<property name="maxEntriesLocalDisk" value="10000000" />
+		<property name="memoryStoreEvictionPolicy" value="LRU" />
+	</cache> -->
+	
+	<resultMap id="BaseResultMap" type="RecommendRecord">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="recommendation_id" property="recommendationId"
+			jdbcType="VARCHAR" />
+		<result column="group_id" property="groupId" jdbcType="INTEGER" />
+		<result column="created_time`" property="createdTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, recommendation_id, group_id, created_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from recommend_record
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectOneByModel" resultMap="BaseResultMap"
+		parameterType="RecommendRecord">
+		select
+		<include refid="Base_Column_List" />
+		from recommend_record
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">
+					and id = #{id,jdbcType=INTEGER}
+				</if>
+				<if test="groupId != null">
+					and group_id = #{groupId,jdbcType=INTEGER}
+				</if>
+				<if test="recommendationId != null">
+					and recommendation_id =
+					#{recommendationId,jdbcType=VARCHAR}
+				</if>
+				<if test="createdTime != null">
+					and created_time = #{createdTime,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+		limit 1
+	</select>
+
+	<select id="selectAllByModel" resultMap="BaseResultMap"
+		parameterType="RecommendRecord">
+		select
+		<include refid="Base_Column_List" />
+		from recommend_record
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">
+					and id = #{id,jdbcType=INTEGER}
+				</if>
+				<if test="groupId != null">
+					and group_id = #{groupId,jdbcType=INTEGER}
+				</if>
+				<if test="recommendationId != null">
+					and recommendation_id =
+					#{recommendationId,jdbcType=VARCHAR}
+				</if>
+				<if test="createdTime != null">
+					and created_time = #{createdTime,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="RecommendRecord">
+		select
+		<include refid="Base_Column_List" />
+		from recommend_record
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		recommend_record
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insertSelective" parameterType="RecommendRecord"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into recommend_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="groupId != null">
+				group_id,
+			</if>
+			<if test="recommendationId != null">
+				recommendation_id,
+			</if>
+			<if test="createdTime != null">
+				created_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="groupId != null">
+				#{groupId,jdbcType=INTEGER},
+			</if>
+			<if test="recommendationId != null">
+				#{recommendationId,jdbcType=VARCHAR},
+			</if>
+			<if test="createdTime != null">
+				#{createdTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="RecommendRecord">
+		update recommend_record
+		<set>
+			<trim suffixOverrides=",">
+				<if test="id != null">
+					id = #{id,jdbcType=INTEGER},
+				</if>
+				<if test="groupId != null">
+					group_id = #{groupId,jdbcType=INTEGER},
+				</if>
+				<if test="recommendationId != null">
+					recommendation_id =
+					#{recommendationId,jdbcType=VARCHAR},
+				</if>
+				<if test="createdTime != null">
+					created_time = #{createdTime,jdbcType=TIMESTAMP},
+				</if>
+			</trim>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- <resultMap type="RecommendRecord" id="UserCourseMap" extends="BaseResultMap"> 
+		<collection property="courseInfos" javaType="list" ofType="RecommendRecord"> 
+		<id property="id" column="course_id" jdbcType="INTEGER" /> <result property="cname" 
+		column="cname" jdbcType="VARCHAR" /> <result property="caddress" column="caddress" 
+		jdbcType="VARCHAR" /> </collection> </resultMap> <select id="selectAll" resultMap="UserCourseMap"> 
+		select u.id, u.uname, u.unumber, c.id course_id, c.cname, c.caddress from 
+		recommend_record u left join course_recommend_record cu on u.id = cu.uid 
+		left join course_info c on cu.cid = c.id </select> -->
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+               http://www.springframework.org/schema/context
+               http://www.springframework.org/schema/context/spring-context.xsd
+               http://www.springframework.org/schema/data/mongo
+            http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+    <mongo:mongo host="${mongo.host}" port="${mongo.port}">  
+        <mongo:options   
+            connections-per-host="${mongo.connectionsPerHost}"  
+            threads-allowed-to-block-for-connection-multiplier="${mongo.threadsAllowedToBlockForConnectionMultiplier}"  
+            connect-timeout="${mongo.connectTimeout}"   
+            max-wait-time="${mongo.maxWaitTime}"  
+            auto-connect-retry="${mongo.autoConnectRetry}"   
+            socket-keep-alive="${mongo.socketKeepAlive}"  
+            socket-timeout="${mongo.socketTimeout}"   
+            slave-ok="${mongo.slaveOk}"  
+            write-number="1"   
+            write-timeout="0"   
+            write-fsync="true"
+            />  
+    </mongo:mongo>  
+    
+    <!-- 配置一个MongoDbFactory,u数据库名叫mydb，mongo-ref指向mongo -->  
+    <!-- 这个东西就是上面那个mongo:mongo配置的bean -->  
+    <mongo:db-factory dbname="${mongo.database}" mongo-ref="mongo" />  
+
+    <!-- mongodb bean的仓库目录，会自动扫描扩展了MongoRepository接口的接口进行注入 -->
+    <!--  
+    <mongo:repositories base-package="com.alfago.weixin.persistence.mongo.repository" />
+    -->
+    
+    <!-- 这个bean的默认名称是mongoTemplate -->  
+    <!-- 类似于spring里的jdbcTemplate，需要注入MongoDbFactory -->  
+    <!-- mongoConverter不是必须的 -->  
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">  
+         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>  
+    </bean>  
+
+    <!-- 注入spring提供的模板 -->  
+ 
+    <bean id="recommendationRepository" class="com.alfago.weixin.persistence.mongo.repository.impl.RecommendationRepositoryImpl">  
+        <property name="mongoTemplate" ref="mongoTemplate"></property>    
+        <property name="collection" value="Recommendation"></property>     
+    </bean>   
+
+	
+</beans>

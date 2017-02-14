@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<ehcache updateCheck="false" name="txswx-ehcache">
+	<diskStore path="F:/cache" />
+	<defaultCache overflowToDisk="true" 
+	    eternal="false"
+		timeToIdleSeconds="3600" 
+		timeToLiveSeconds="3600" 
+		maxElementsInMemory="10000"
+		maxElementsOnDisk="10" 
+		diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="300" 
+		diskSpoolBufferSizeMB="1000"
+		memoryStoreEvictionPolicy="LRU" />
+</ehcache> 
