@@ -2,6 +2,7 @@ package com.alfago.weixin.persistence.dao;
 
 import static org.junit.Assert.*;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alfago.weixin.common.beans.RecommendRecord;
 import com.alfago.weixin.service.mail.MailService;
+import com.caucho.hessian.client.HessianProxyFactory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/spring/applicationContext.xml"})
@@ -36,12 +38,21 @@ public class RecommendRecordMapperTest {
 	}
 	*/
 	@Test
-	public void testSelectByPrimaryKey() {
-		RecommendRecord recommendRecord = null;
+	public void testSelectByPrimaryKey() throws MalformedURLException {
+		
+/*		RecommendRecord recommendRecord = null;
+		recommendRecord =  recommendRecordMapper.selectByPrimaryKey(2);
+		System.out.println(recommendRecord.getRecommendationId());*/
+		
+		 String url = "http://localhost:8080/alfago/hessian/RecommendRecordMapper"; 
+		 HessianProxyFactory factory = new HessianProxyFactory(); 
+		 RecommendRecordMapper recommendRecordMapper = (RecommendRecordMapper) factory.create(RecommendRecordMapper.class, url); 
+		 RecommendRecord recommendRecord = null;
 		recommendRecord =  recommendRecordMapper.selectByPrimaryKey(2);
 		System.out.println(recommendRecord.getRecommendationId());
+		
 	}
-	@Test
+/*	@Test
 	public void testUpdateByPrimaryKeySelective() {
 		RecommendRecord recommendRecord = new RecommendRecord();
 		recommendRecord.setId(2);
@@ -55,7 +66,7 @@ public class RecommendRecordMapperTest {
 		recommendRecord.setGroupId(1122121);
 		recommendRecord.setRecommendationId("12121131231");
 		recommendRecordMapper.insertSelective(recommendRecord);
-	}
+	}*/
 /*	@Test
 	public void testInsertSelective() {
 		RecommendRecord recommendRecord = new RecommendRecord();

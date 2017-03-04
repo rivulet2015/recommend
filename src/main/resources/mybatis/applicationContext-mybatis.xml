@@ -46,17 +46,23 @@
   
         <!-- 配置监控统计拦截的filters -->  
         <property name="filters" value="stat"/>  
-    </bean>  
-  
+    </bean>
+
 	<!-- myBatis文件 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
 		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
-		<property name="mapperLocations" value="classpath:com/alfago/weixin/persistence/dao/*.xml" />
+		<property name="mapperLocations"
+			value="classpath:com/alfago/weixin/persistence/dao/*.xml" />
 	</bean>
+	
+	<!--MapperScannerConfigurer配置-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!--basePackage指定要扫描的包，在此包之下的映射器都会被 搜索到。可指定多个包，包与包之间用逗号或分号分隔 -->
+		<property name="basePackage" value="com.abc.mapper" />
+	</bean> 
 
-  
     <!-- spring与mybatis整合配置，扫描所有dao -->  
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.alfago.weixin.persistence.dao" />

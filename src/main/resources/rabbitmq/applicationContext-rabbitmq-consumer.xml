@@ -1,99 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-        http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd">
+        http://www.springframework.org/schema/rabbit 
+        http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd">
 
-    
-	<bean id="rcf" class="com.rabbitmq.client.ConnectionFactory">
-		<property name="host" value="${queue.host}" />
-		<property name="requestedHeartbeat" value="20" />
-		<property name="username" value="${queue.username}" />
-		<property name="password" value="${queue.password}" />
-	</bean>
-	<bean id="rabbitConnectionFactory"
-		class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
-		<constructor-arg ref="rcf" />
-	</bean>
+    <!--配置connection-factory，指定连接rabbit server参数-->
+    <rabbit:connection-factory id="connectionFactory" 
+        username="${queue.username}" 
+        password="${queue.password}"
+        host="${queue.host}"
+        port="${queue.host}"
+        virtual-host="/"
+        />
 
-	<!-- queue -->
-	<bean id="queueArgs" class="java.util.HashMap">
-		<constructor-arg>
-			<map key-type="java.lang.String" value-type="java.lang.String">
-				<entry key="x-ha-policy" value="all"></entry>
-			</map>
-		</constructor-arg>
-	</bean>
-
-
-	<bean id="log_queue" class="org.springframework.amqp.core.Queue">
-		<constructor-arg value="log_queue"></constructor-arg>
-		<constructor-arg value="true"></constructor-arg>
-		<constructor-arg value="false"></constructor-arg>
-		<constructor-arg value="false"></constructor-arg>
-		<constructor-arg ref="queueArgs"></constructor-arg>
-	</bean>
-
-	<bean id="rabbitAdmin" class="org.springframework.amqp.rabbit.core.RabbitAdmin">
-		<constructor-arg ref="rabbitConnectionFactory" />
-	</bean>
-
-	<bean id="queueList" class="java.util.ArrayList">
-		<constructor-arg>
-			<list>
-				<ref bean="log_queue" />
-			</list>
-		</constructor-arg>
-
-	</bean>
-
-
-	<!-- queue end -->
-
-
-
-	<bean id="queueInit" class="com.cx.message.sender.impl.QueueInitImpl"
-		init-method="init">
-		<property name="rabbitAdmin" ref="rabbitAdmin" />
-		<property name="queues" ref="queueList" />
-	</bean>
-
-
-
-	<!-- template end -->
-
-	<!-- convert -->
-	<bean id="senderMessageConverter"
-		class="org.springframework.amqp.support.converter.SimpleMessageConverter">
-	</bean>
-	<bean id="jsonMessageConverter"
-		class="org.springframework.amqp.support.converter.JsonMessageConverter">
-	</bean>
-	<!-- <bean id="recordMessageConverter" class="com.cx.ts.common.msg.converter.RecordMessageConverter"> 
-		</bean> -->
-
-	<!-- send service -->
-
-
-
-	<!-- log queue configuration -->
-	<bean id="logRabbitMQTemplate" class="org.springframework.amqp.rabbit.core.RabbitTemplate">
-		<constructor-arg ref="rabbitConnectionFactory"></constructor-arg>
-		<property name="queue" value="log_queue" />
-		<property name="routingKey" value="log_queue" />
-		<property name="messageConverter" ref="senderMessageConverter" />
-	</bean>
-	<!-- template end -->
-
-	<!-- log sender -->
-	<bean id="logSender"
-		class="com.cx.message.sender.impl.RabbitMQMessageSenderImpl">
-		<property name="rabbitTemplate" ref="logRabbitMQTemplate" />
-	</bean>
-
-	<bean id="logAppender" class="com.cx.common.log4j.appender.LogAppender">
-		<property name="logSender" ref="logSender" />
-	</bean>
+    <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成-->
+    <rabbit:admin connection-factory="connectionFactory"/>	
+	
+    <!--定义queue-->
+    <rabbit:queue id="log_queue" name="log_queue" durable="true" auto-delete="false" exclusive="false"/>    
+	
+     <bean id="logReceiver" class="com.alfago.weixin.common.message.rabbitmq.LogReceiver"></bean>
+     
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener queues="log_queue" ref="logReceiver"/>
+    </rabbit:listener-container>
 </beans>

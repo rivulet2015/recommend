@@ -31,13 +31,13 @@ public class UserEntityServiceImplTest {
 	@Test
 	public void testInsertSelective() {
 		List<UserEntity> list = new ArrayList<UserEntity>();
-		for(int i = 0; i< 2000; i++){
+/*		for(int i = 0; i< 2000; i++){
 			UserEntity userEntity = new UserEntity();
 			userEntity.setGroupId(12345);
 			userEntity.setQq("123456989"+i);
 			list.add(userEntity);
 		}
-		userEntityService.insertBatch(list);
+		userEntityService.insertBatch(list);*/
 		
 	}
 
