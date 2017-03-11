@@ -7,5 +7,4 @@
 		<property name="service" ref="recommendRecordMapper" />
 		<property name="serviceInterface" value="com.alfago.weixin.persistence.dao.RecommendRecordMapper" />
 	</bean>
-
 </beans>

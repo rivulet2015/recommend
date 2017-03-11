@@ -44,12 +44,12 @@ public class RecommendRecordMapperTest {
 		recommendRecord =  recommendRecordMapper.selectByPrimaryKey(2);
 		System.out.println(recommendRecord.getRecommendationId());*/
 		
-		 String url = "http://localhost:8080/alfago/hessian/RecommendRecordMapper"; 
+/*		 String url = "http://localhost:8080/alfago/hessian/RecommendRecordMapper"; 
 		 HessianProxyFactory factory = new HessianProxyFactory(); 
 		 RecommendRecordMapper recommendRecordMapper = (RecommendRecordMapper) factory.create(RecommendRecordMapper.class, url); 
 		 RecommendRecord recommendRecord = null;
 		recommendRecord =  recommendRecordMapper.selectByPrimaryKey(2);
-		System.out.println(recommendRecord.getRecommendationId());
+		System.out.println(recommendRecord.getRecommendationId());*/
 		
 	}
 /*	@Test

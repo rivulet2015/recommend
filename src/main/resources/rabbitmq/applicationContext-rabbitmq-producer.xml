@@ -13,15 +13,25 @@
         username="${queue.username}" 
         password="${queue.password}"
         host="${queue.host}"
-        port="${queue.host}"
+        port="${queue.port}"
         virtual-host="/"
         />
-
+	<!-- queue -->
+    <rabbit:queue-arguments id="queueArgs">
+        <entry key="x-ha-policy" >
+            <value type="java.lang.String">all</value> 
+        </entry>
+        <entry key="x-max-priority">  
+             <!-- MUST specifically define java.lang.Integer to get it to work --> 
+            <value type="java.lang.Integer">10</value> 
+        </entry>  
+    </rabbit:queue-arguments>
+	
     <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成-->
     <rabbit:admin connection-factory="connectionFactory"/>	
 	
     <!--定义queue-->
-    <rabbit:queue id="log_queue" name="log_queue" durable="true" auto-delete="false" exclusive="false"/>    
+    <rabbit:queue id="log_queue" name="log_queue" durable="true" auto-delete="false" exclusive="false" queue-arguments="queueArgs"/>    
 	
     <!-- 定义exchange，绑定queue -->
     <rabbit:fanout-exchange name="exchange" durable="true" auto-delete="false">
@@ -37,7 +47,5 @@
     <!--定义rabbit template用于数据的接收和发送-->
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="exchange" message-converter="jsonMessageConverter"/>
     
-	<bean id="logAppender" class="com.cx.common.log4j.appender.LogAppender">
-		<property name="logSender" ref="amqpTemplate" />
-	</bean>
+	<bean id="logAppender" class="com.alfago.weixin.common.message.rabbitmq.LogAppender"/>
 </beans>
