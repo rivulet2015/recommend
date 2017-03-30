@@ -6,14 +6,17 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.alfago.weixin.common.beans.UserEntity;
 import com.alfago.weixin.persistence.dao.IBaseDao;
 import com.alfago.weixin.persistence.dao.UserEntityMapper;
 import com.alfago.weixin.service.persistence.IUserInfoService;
-
+@Scope("singleton")
 @Service("userEntityService")
+@Component
 public class UserEntityServiceImpl extends BaseServiceImpl<UserEntity,Integer> implements IUserInfoService{
 
 	@Autowired
@@ -31,12 +34,6 @@ public class UserEntityServiceImpl extends BaseServiceImpl<UserEntity,Integer> i
 	public IBaseDao<UserEntity, Integer> getDao() {
 		// TODO Auto-generated method stub
 		return userEntityMapper;
-	}
-
-	@Override
-	public SqlSessionFactory getSessionFactory() {
-		// TODO Auto-generated method stub
-		return this.getSqlSessionFactory();
 	}
 
 }

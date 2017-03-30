@@ -35,7 +35,7 @@ public class LogAppender extends AppenderSkeleton {
 
 	@Override
 	protected void append(LoggingEvent event) {
-		
+
 		final int priority = event.getLevel().toInt();
 		amqpTemplate.convertAndSend(event, new MessagePostProcessor(){
 

@@ -2,6 +2,8 @@ package com.alfago.weixin.service.persistence.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -24,9 +26,9 @@ public abstract class BaseServiceImpl<Model, PK> implements
 
 	private static Integer defaultBathCount = 1000;
 
-	private Integer batchCount = defaultBathCount;
+	private Integer batchCount = 1000;
 
-	@Autowired
+	@Resource(name="sqlSessionFactory")
 	private SqlSessionFactory sqlSessionFactory;
 
 	/**
@@ -36,7 +38,6 @@ public abstract class BaseServiceImpl<Model, PK> implements
 	 */
 	public abstract IBaseDao<Model, PK> getDao();
 
-	public abstract SqlSessionFactory getSessionFactory();
 
 	/**
 	 * 插入对象
@@ -91,7 +92,7 @@ public abstract class BaseServiceImpl<Model, PK> implements
 
 		SqlSession batchSqlSession = null;
 		try {
-			batchSqlSession = getSessionFactory().openSession(ExecutorType.BATCH, false);
+			batchSqlSession = getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
 			
 			for (int index = 0; index < models.size(); index++) {
 

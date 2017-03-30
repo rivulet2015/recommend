@@ -30,16 +30,19 @@ public class LogAppenderTest {
 	@Test
 	public void testAppendLoggingEvent() {
 		String message = "test";
-		amqpTemplate.convertAndSend((Object)message,new MessagePostProcessor(){
+		for(long i=0;i<5L;i++){
+			amqpTemplate.convertAndSend((Object)message,new MessagePostProcessor(){
 
-			public Message postProcessMessage(Message message)
-					throws AmqpException {
-				message.getMessageProperties().setPriority(10);  
-				return message;
-			}
-			
-			
-		});
+				public Message postProcessMessage(Message message)
+						throws AmqpException {
+					message.getMessageProperties().setPriority(10);  
+					return message;
+				}
+				
+				
+			});			
+		}
+
 	}
 
 }

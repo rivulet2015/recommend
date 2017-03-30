@@ -58,10 +58,6 @@
 	</bean>
 	
 	<!--MapperScannerConfigurer配置-->
-	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<!--basePackage指定要扫描的包，在此包之下的映射器都会被 搜索到。可指定多个包，包与包之间用逗号或分号分隔 -->
-		<property name="basePackage" value="com.abc.mapper" />
-	</bean> 
 
     <!-- spring与mybatis整合配置，扫描所有dao -->  
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
@@ -89,16 +85,34 @@
             <tx:method name="*"/>  
         </tx:attributes>  
     </tx:advice>  
+ 
+    
+    <!-- 事务 aop 配置 -->
+	<aop:config>
+		<aop:pointcut id="serviceMethods" expression="execution(* com.alfago.weixin.service.persistence.impl..*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods" order="1" />
+<!-- 		<aop:aspect id="logAspect" ref="logInterceptor" order="2">
+		    <aop:pointcut id="logPointcut" expression="execution(* com.alfago.weixin.service.persistence.impl..*.*(..))" />
+			定义前置
+			<aop:before method="doBefore" pointcut-ref="logPointcut"/>
+			定义环绕
+ 			<aop:around method="around" pointcut-ref="logPointcut"/> 
+			定义后置
+			<aop:after method="doAfter" pointcut-ref="logPointcut"/>
+			定义Target处理后普通结果增强
+			<aop:after-returning method="afterReturn" pointcut-ref="logPointcut" returning="obj"/>
+			定义Target处理后异常增强
+			<aop:after-throwing method="afterThrow" pointcut-ref="logPointcut" throwing="ex"/>
+		</aop:aspect> -->
+	</aop:config>  
   
-    <!-- 事务 aop 配置 -->  
-    <aop:config>  
-        <aop:pointcut id="serviceMethods" expression="execution(* com.alfago.weixin.service.*.*(..))"/>  
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>  
-    </aop:config>  
-  
+<!-- log拦截器类 --> 
+<bean id="logInterceptor" class="com.alfago.weixin.services.interceptor.ServiceInterceptor"/> 
+	
+	
     <!-- 配置使Spring采用CGLIB代理 -->  
     <aop:aspectj-autoproxy proxy-target-class="true"/>  
-  
+    
     <!-- 启用对事务注解的支持 -->  
     <tx:annotation-driven transaction-manager="transactionManager"/>  
   
