@@ -12,6 +12,7 @@
 	<aop:aspectj-autoproxy />
 	
     <import resource="classpath:mybatis/applicationContext-mybatis.xml" />
+        <import resource="classpath:redis/applicationContext-redis.xml" />
     <import resource="classpath:mongo/applicationContext-mongo.xml" />
     <import resource="classpath:quartz/applicationContext-quartz.xml" />
     <import resource="classpath:rabbitmq/applicationContext-rabbitmq-consumer.xml" />

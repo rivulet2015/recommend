@@ -28,14 +28,14 @@ public class RecommendationRepositoryTest {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-/*	@Test
+	@Test
 	public void testInsertS() {
 		Recommendation r = new Recommendation();
 		r.setCreatedTime(new Date());
 		r.setContent("abcd");
 		r.setId("123467");
-		recommendationRepository.save(r);
-	}*/
+		recommendationRepository.insert(r);
+	}
 
 	@Test
 	public void testSave() {

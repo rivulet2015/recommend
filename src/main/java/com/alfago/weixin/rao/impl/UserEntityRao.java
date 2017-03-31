@@ -2,11 +2,15 @@ package com.alfago.weixin.rao.impl;
 
 import java.util.ArrayList;  
 import java.util.List;  
+
 import org.springframework.dao.DataAccessException;  
 import org.springframework.data.redis.connection.RedisConnection;  
 import org.springframework.data.redis.core.RedisCallback;  
 import org.springframework.data.redis.serializer.RedisSerializer;  
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;  
+
+import redis.clients.jedis.ShardedJedis;
 
 import com.alfago.weixin.common.beans.UserEntity;
 import com.alfago.weixin.rao.AbstractBaseRedisDao;
@@ -16,8 +20,9 @@ import com.alfago.weixin.rao.IUserEntityRao;
  * Dao 
  * @author http://blog.csdn.net/java2000_wl  
  * @version <b>1.0</b>  
- */   
-public class UserEntityRao extends AbstractBaseRedisDao<String, UserEntity> implements IUserEntityRao {  
+ */  
+@Component
+public class UserEntityRao extends AbstractBaseRedisDao<String, String> implements IUserEntityRao {  
   
     /**  
      * 新增 
@@ -30,12 +35,13 @@ public class UserEntityRao extends AbstractBaseRedisDao<String, UserEntity> impl
             public Boolean doInRedis(RedisConnection connection)  
                     throws DataAccessException {  
                 RedisSerializer<String> serializer = getRedisSerializer();  
-                byte[] key  = serializer.serialize(user.getId().toString());  
+                byte[] key  = serializer.serialize(user.getGroupId().toString());  
                 byte[] name = serializer.serialize(user.getQq());  
                 return connection.setNX(key, name);  
             }  
         });  
         return result;  
+        
     }
 
 	public boolean add(List<UserEntity> list) {

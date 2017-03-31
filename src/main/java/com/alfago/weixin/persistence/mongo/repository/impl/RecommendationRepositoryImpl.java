@@ -6,11 +6,12 @@ import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Component;
 
 import com.alfago.weixin.common.domain.Recommendation;
 import com.alfago.weixin.persistence.mongo.repository.AbstractRepository;
 import com.alfago.weixin.persistence.mongo.repository.RecommendationRepository;
-
+@Component
 public class RecommendationRepositoryImpl extends AbstractRepository<Recommendation,String> implements RecommendationRepository{
 
 	
