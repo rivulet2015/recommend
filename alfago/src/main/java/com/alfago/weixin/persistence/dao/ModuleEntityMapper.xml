@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alfago.weixin.persistence.dao.ModuleEntityMapper">
+	<resultMap id="BaseResultMap" type="ModuleEntity">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="page_id" property="pageId" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="systime" property="systime" jdbcType="TIMESTAMP" />			
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, page_id, name, systime
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_module_type
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectOneByModel" resultMap="BaseResultMap" parameterType="ModuleEntity">
+		select
+		<include refid="Base_Column_List" />
+		from t_module_type
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">
+					and id = #{id,jdbcType=INTEGER}
+				</if>
+				<if test="pageId != null">
+					and page_id = #{pageId,jdbcType=INTEGER}
+				</if>					
+				<if test="name != null">
+					and name = #{name,jdbcType=VARCHAR}
+				</if>				
+				<if test="systime != null">
+					and systime = #{systime,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+		limit 1
+	</select>	
+
+	<select id="selectAllByModel" resultMap="BaseResultMap" parameterType="ModuleEntity">
+		select
+		<include refid="Base_Column_List" />
+		from t_module_type
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">
+					and id = #{id,jdbcType=INTEGER}
+				</if>
+				<if test="pageId != null">
+					and page_id = #{pageId,jdbcType=INTEGER}
+				</if>					
+				<if test="name != null">
+					and name = #{name,jdbcType=VARCHAR}
+				</if>				
+				<if test="systime != null">
+					and systime = #{systime,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+	</select>		
+
+	<select id="selectModelByPage" resultMap="BaseResultMap"  >
+		select
+		<include refid="Base_Column_List" />
+		from t_module_type
+		<where>
+			<trim suffixOverrides="and">
+				<if test="model.id != null">
+					and id = #{model.id,jdbcType=INTEGER}
+				</if>
+				<if test="model.pageId != null">
+					and page_id = #{model.pageId,jdbcType=INTEGER}
+				</if>					
+				<if test="model.name != null">
+					and name = #{model.name,jdbcType=VARCHAR}
+				</if>				
+				<if test="model.systime != null">
+					and systime = #{model.systime,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+		limit #{start,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
+	</select>		
+
+	<select id="countSelectModel" resultType="java.lang.Integer">
+		select count(*) as count from t_module_type
+		<where>
+			<trim suffixOverrides="and">
+				<if test="model.id != null">
+					and id = #{model.id,jdbcType=INTEGER}
+				</if>
+				<if test="pageId != null">
+					and page_id = #{pageId,jdbcType=INTEGER}
+				</if>					
+				<if test="model.name != null">
+					and name = #{model.name,jdbcType=VARCHAR}
+				</if>				
+				<if test="model.systime != null">
+					and systime = #{model.systime,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+	</select>		
+		
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="ModuleEntity">
+		select
+		<include refid="Base_Column_List" />
+		from t_module_type
+	</select>		
+				
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		t_module_type
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insertSelective" parameterType="ModuleEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into t_module_type
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pageId != null">
+				page_id,
+			</if>			    
+			<if test="name != null">
+				name,
+			</if>		
+			<if test="systime != null">
+				systime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pageId != null">
+				#{pageId,jdbcType=INTEGER},
+			</if>		    
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="systime != null">
+				#{systime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="ModuleEntity">
+		update t_module_type
+		<set>
+			<trim  suffixOverrides=",">
+				<if test="pageId != null">
+					page_id = #{pageId,jdbcType=INTEGER},
+				</if>			    
+				<if test="name != null">
+					name = #{name,jdbcType=VARCHAR},
+				</if>
+				<if test="systime != null">
+					systime = #{systime,jdbcType=TIMESTAMP},
+				</if>
+			</trim>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+<!--  
+	<resultMap type="ModuleEntity" id="UserCourseMap"
+		extends="BaseResultMap">
+		<collection property="courseInfos" javaType="list"
+			ofType="ModuleEntity">
+			<id property="id" column="course_id" jdbcType="INTEGER" />
+			<result property="cname" column="cname" jdbcType="VARCHAR" />
+			<result property="caddress" column="caddress" jdbcType="VARCHAR" />
+		</collection>
+	</resultMap>
+	<select id="selectAll" resultMap="UserCourseMap">
+		select u.id, u.uname,
+		u.unumber, c.id course_id, c.cname, c.caddress from t_module_type u left
+		join course_t_module_type cu on u.id = cu.uid
+		left join course_info c on
+		cu.cid = c.id
+	</select>
+-->	
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/rabbit 
+        http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd">
+
+    <!--配置connection-factory，指定连接rabbit server参数-->
+    <rabbit:connection-factory id="connectionFactory" 
+        username="${queue.username}" 
+        password="${queue.password}"
+        host="${queue.host}"
+        port="${queue.port}"
+        virtual-host="/"
+        />
+	<!-- queue -->
+    <rabbit:queue-arguments id="queueArgs">
+        <entry key="x-ha-policy" >
+            <value type="java.lang.String">all</value> 
+        </entry>
+        <entry key="x-max-priority">  
+             <!-- MUST specifically define java.lang.Integer to get it to work --> 
+            <value type="java.lang.Integer">10</value> 
+        </entry>  
+    </rabbit:queue-arguments>
+	
+    <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成-->
+    <rabbit:admin connection-factory="connectionFactory"/>	
+	
+    <!--定义queue-->
+    <rabbit:queue id="log_queue" name="log_queue" durable="true" auto-delete="false" exclusive="false" queue-arguments="queueArgs"/>    
+	
+    <!-- 定义exchange，绑定queue -->
+    <rabbit:fanout-exchange name="exchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="log_queue"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:fanout-exchange>
+    
+    <bean id="jsonMessageConverter"
+		class="org.springframework.amqp.support.converter.JsonMessageConverter">
+	</bean>
+	
+    <!--定义rabbit template用于数据的接收和发送-->
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="exchange" message-converter="jsonMessageConverter"/>
+    
+	<bean id="logAppender" class="com.alfago.weixin.common.message.rabbitmq.LogAppender"/>
+</beans>
